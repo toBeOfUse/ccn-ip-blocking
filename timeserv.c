@@ -16,7 +16,7 @@
 #define HOSTLEN 256
 #define oops(msg)                                                              \
     {                                                                          \
-        printf("error happened:\n")                                            \
+        printf("error happened:\n");                                           \
         perror(msg);                                                           \
         exit(1);                                                               \
     }
