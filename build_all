@@ -1,0 +1,2 @@
+gcc timeserv.c -g -o timeserv
+gcc timeclnt.c -g -o timeclnt
