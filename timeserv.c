@@ -16,12 +16,32 @@
 #define HOSTLEN 256
 #define oops(msg)                                                              \
     {                                                                          \
+        printf("error happened:\n")                                            \
         perror(msg);                                                           \
         exit(1);                                                               \
     }
 
 int main(int ac, char* av[])
 {
+    // load allowed ips
+    FILE * whitelist;
+    whitelist = fopen("whitelist.txt", "r");
+    if (whitelist == NULL){
+        oops("whitelist file didn't work");
+    }
+    size_t line_length;
+    char* addresses[32];
+    int addresses_count = 0;
+    char * line = NULL;
+    while (getline(&line, &line_length, whitelist) !=- 1) {
+        addresses[addresses_count] = line;
+        ++addresses_count;
+        printf("registered allowed ip address: %s\n", line);
+    }
+
+    fclose(whitelist);
+
+
     struct sockaddr_in saddr; /* build our address here */
     struct hostent* hp; /* this is part of our    */
     char hostname[HOSTLEN]; /* address 	         */
@@ -69,7 +89,7 @@ int main(int ac, char* av[])
 
     while (1) {
         struct sockaddr client_address;
-        socklen_t client_address_length;
+        int client_address_length;
         sock_fd = accept(sock_id, &client_address, &client_address_length); /* wait for call */
         printf("Wow! got a call!\n");
         struct sockaddr_in* client_address_in = (struct sockaddr_in*)&client_address;
