@@ -64,6 +64,8 @@ int main(int ac, char* av[])
      * main loop: accept(), write(), close()
      */
 
+	printf("listening for calls...\n");
+
     while (1) {
         sock_fd = accept(sock_id, NULL, NULL); /* wait for call */
         printf("Wow! got a call!\n");

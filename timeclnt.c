@@ -12,6 +12,7 @@
 
 #define oops(msg)                                                              \
     {                                                                          \
+        printf("error:\n");                                                    \
         perror(msg);                                                           \
         exit(1);                                                               \
     }
@@ -59,6 +60,7 @@ int main(int ac, char* av[])
     messlen = read(sock_id, message, BUFSIZ); /* read stuff   */
     if (messlen == -1)
         oops("read");
+    printf("read from server:\n");
     if (write(1, message, messlen) != messlen) /* and write to */
         oops("write"); /* stdout       */
     close(sock_id);
