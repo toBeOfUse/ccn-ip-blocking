@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
+#include <arpa/inet.h>
 
 #define PORTNUM 13000 /* our time service phone number */
 #define HOSTLEN 256
@@ -67,8 +68,17 @@ int main(int ac, char* av[])
 	printf("listening for calls...\n");
 
     while (1) {
-        sock_fd = accept(sock_id, NULL, NULL); /* wait for call */
+        struct sockaddr client_address;
+        socklen_t client_address_length;
+        sock_fd = accept(sock_id, &client_address, &client_address_length); /* wait for call */
         printf("Wow! got a call!\n");
+        struct sockaddr_in* client_address_in = (struct sockaddr_in*)&client_address;
+        struct in_addr final_client_address = client_address_in->sin_addr;
+        char address_as_str[INET_ADDRSTRLEN];
+        inet_ntop( AF_INET, &final_client_address, address_as_str, INET_ADDRSTRLEN );
+        printf("client has address: %s\n", address_as_str);
+
+
         if (sock_fd == -1)
             oops("accept"); /* error getting calls  */
 
@@ -78,7 +88,7 @@ int main(int ac, char* av[])
 
         thetime = time(NULL); /* get time             */
         /* and convert to strng */
-        fprintf(sock_fp, "The time here is ..");
+        fprintf(sock_fp, "The time here is: ");
         fprintf(sock_fp, "%s", ctime(&thetime));
         fclose(sock_fp); /* release connection   */
     }
