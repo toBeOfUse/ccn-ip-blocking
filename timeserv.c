@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <time.h>
@@ -21,28 +22,6 @@
         exit(1);                                                               \
     }
 
-int same(char * a, char * b){
-    // compares strings, considering null terminator to be equal to newline
-    int i = 0;
-    int differenceFound = 0;
-    while (a[i] != '\0' &&  b[i] != '\0'){
-        if (a[i] != b[i]){
-            differenceFound = 1;
-            break;
-        }
-        ++i;
-    }
-    if (differenceFound){
-        return 0;
-    }
-    if (a[i] == '\0' && (b[i] == '\0' || b[i] == '\n')){
-        return 1;
-    } else if (b[i] == '\0' && (a[i] == '\0' || b[i] == '\n')){
-        return 1;
-    }
-    return 0;
-}
-
 int main(int ac, char* av[])
 {
     // load allowed ips
@@ -56,6 +35,10 @@ int main(int ac, char* av[])
     int addresses_count = 0;
     char * line = NULL;
     while (getline(&line, &line_length, whitelist) !=- 1) {
+        char * line_break = strchr(line, '\n');
+        if (line_break){
+            *line_break = 0;
+        }
         addresses[addresses_count] = line;
         ++addresses_count;
         printf("registered allowed ip address: %s\n", line);
@@ -121,7 +104,7 @@ int main(int ac, char* av[])
         printf("client has address: %s\n", address_as_str);
         int allowed = 0;
         for (int i=0; i<addresses_count; i++){
-            if (same(address_as_str, addresses[i])) {
+            if (strcmp(address_as_str, addresses[i])) {
                 allowed = 1;
             }
         }
