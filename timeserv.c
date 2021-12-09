@@ -13,7 +13,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-#define PORTNUM 8080 /* our time service phone number */
+#define PORTNUM 8081 /* our time service phone number */
 #define HOSTLEN 256
 #define oops(msg)                                                              \
     {                                                                          \
@@ -42,6 +42,7 @@ int main(int ac, char* av[])
         addresses[addresses_count] = line;
         ++addresses_count;
         printf("registered allowed ip address: %s\n", line);
+        line = NULL;
     }
     printf("registered %d addresses\n", addresses_count);
 
@@ -112,7 +113,7 @@ int main(int ac, char* av[])
         }
 
         if (!allowed){
-            printf("hanging up on client\n");
+            printf("client is not allowed; hanging up on client\n");
             close(sock_fd);
             continue;
         } else {
