@@ -21,6 +21,28 @@
         exit(1);                                                               \
     }
 
+int same(char * a, char * b){
+    // compares strings, considering null terminator to be equal to newline
+    int i = 0;
+    int differenceFound = 0;
+    while (a[i] != '\0' &&  b[i] != '\0'){
+        if (a[i] != b[i]){
+            differenceFound = 1;
+            break;
+        }
+        ++i;
+    }
+    if (differenceFound){
+        return 0;
+    }
+    if (a[i] == '\0' && (b[i] == '\0' || b[i] == '\n')){
+        return 1;
+    } else if (b[i] == '\0' && (a[i] == '\0' || b[i] == '\n')){
+        return 1;
+    }
+    return 0;
+}
+
 int main(int ac, char* av[])
 {
     // load allowed ips
@@ -97,6 +119,20 @@ int main(int ac, char* av[])
         char address_as_str[INET_ADDRSTRLEN];
         inet_ntop( AF_INET, &final_client_address, address_as_str, INET_ADDRSTRLEN );
         printf("client has address: %s\n", address_as_str);
+        int allowed = 0;
+        for (int i=0; i<addresses_count; i++){
+            if (same(address_as_str, addresses[i])) {
+                allowed = 1;
+            }
+        }
+
+        if (!allowed){
+            printf("hanging up on client\n");
+            fclose(sock_fp);
+            continue;
+        } else {
+            printf("client is allowed\n");
+        }
 
 
         if (sock_fd == -1)
