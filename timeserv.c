@@ -98,6 +98,7 @@ int main(int ac, char* av[])
         int client_address_length;
         sock_fd = accept(sock_id, &client_address, &client_address_length); /* wait for call */
         printf("Wow! got a call!\n");
+        
         struct sockaddr_in* client_address_in = (struct sockaddr_in*)&client_address;
         struct in_addr final_client_address = client_address_in->sin_addr;
         char address_as_str[INET_ADDRSTRLEN];
@@ -112,7 +113,7 @@ int main(int ac, char* av[])
 
         if (!allowed){
             printf("hanging up on client\n");
-            fclose(sock_fp);
+            close(sock_fd);
             continue;
         } else {
             printf("client is allowed\n");
