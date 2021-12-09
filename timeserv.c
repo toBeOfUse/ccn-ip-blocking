@@ -104,7 +104,7 @@ int main(int ac, char* av[])
         printf("client has address: %s\n", address_as_str);
         int allowed = 0;
         for (int i=0; i<addresses_count; i++){
-            if (strcmp(address_as_str, addresses[i])) {
+            if (strcmp(address_as_str, addresses[i]) == 0) {
                 allowed = 1;
             }
         }
